@@ -35,3 +35,42 @@ app.use('/', droneRoutes)
 require('./error-handling')(app);
 
 module.exports = app;
+
+
+
+
+
+const express = require("express");
+const mongoose = require("mongoose");
+const hbs = require("hbs");
+const methodOverride = require("method-override");
+
+const app = express();
+
+// Database Connection
+mongoose.connect("mongodb://localhost:27017/dronesDB", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+// Middleware
+app.set("view engine", "hbs");
+app.set("views", __dirname + "/views");
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
+app.use(methodOverride("_method"));
+
+// Routes
+const droneRoutes = require("./routes/drones");
+app.use("/drones", droneRoutes);
+
+// Home Page
+app.get("/", (req, res) => {
+  res.render("index");
+});
+
+// Start Server
+app.listen(3000, () => {
+  console.log("Server running on http://localhost:3000");
+});
+
